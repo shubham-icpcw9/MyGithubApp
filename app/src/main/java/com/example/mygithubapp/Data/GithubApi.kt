@@ -1,0 +1,14 @@
+package com.example.mygithubapp.Data
+
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
+
+interface GithubApi {
+
+    @GET(ApiEndpoints.GITHUB_PR_DETAILS)
+    suspend fun getGithubPrDetails(@Path("owner") owner: String,
+                                   @Path("repo") repo: String,
+                                   @Query("state") state: String) : Response<List<PullRequestResponse>>
+}

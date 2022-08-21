@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MyGithubApp</string>
+    <string name="closedDateLabel">Closed at</string>
+    <string name="createdDateLabel">Created at</string>
+    <string name="userNameLabel">by</string>
+    <string name="apiFailedError">API Failed</string>
+    <string name="retry">Retry</string>
+    <string name="no_closed_prs_label">No Closed PRs</string>
+</resources>
