@@ -10,5 +10,8 @@ interface GithubApi {
     @GET(ApiEndpoints.GITHUB_PR_DETAILS)
     suspend fun getGithubPrDetails(@Path("owner") owner: String,
                                    @Path("repo") repo: String,
-                                   @Query("state") state: String) : Response<List<PullRequestResponse>>
+                                   @Query("state") state: String,
+                                   @Query("page") page: Int,
+                                   @Query("per_page") perPage: Int) :
+            Response<List<PullRequestResponse>>
 }

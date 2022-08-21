@@ -44,7 +44,9 @@ class PullRequestFragment : Fragment() {
     }
 
     private fun initTasks() {
-        viewModel.getPRDetails(viewModel.owner, viewModel.repo)
+        viewModel.pageNo = 0
+        viewModel.listEndReached = false
+        viewModel.getPRDetails(viewModel.owner, viewModel.repo, viewModel.pageNo)
     }
 
     private fun initApiObservers() {
@@ -55,8 +57,12 @@ class PullRequestFragment : Fragment() {
                     response.data?.let {
                         if(it.isEmpty())
                             binding.noPrEmptyState.emptyView.visibility = View.VISIBLE
-                        else
-                            viewModel.initPRList(it)
+                        else {
+                            if(viewModel.isFirstPage())
+                                viewModel.initPRList(it)
+                            else
+                                viewModel.addPRList(it)
+                        }
                     }
                 }
 
@@ -64,12 +70,16 @@ class PullRequestFragment : Fragment() {
                     stopLoadingProgress()
                     binding.connectionErrorState.visibility = View.VISIBLE
                     binding.connectionErrorState.retryBtn.setOnClickListener {
+                        binding.connectionErrorState.visibility = View.GONE
                         initTasks()
                     }
                 }
 
                 is Resource.Loading -> {
-                    binding.LoadingInProgress.visibility = View.VISIBLE
+                    if(viewModel.isFirstPage())
+                        binding.LoadingInProgress.visibility = View.VISIBLE
+                    else
+                        binding.paginationProgressBar.visibility = View.VISIBLE
                 }
             }
         }
@@ -78,6 +88,7 @@ class PullRequestFragment : Fragment() {
     private fun stopLoadingProgress() {
         binding.LoadingInProgress.visibility = View.GONE
         binding.swipeRefresh.isRefreshing = false
+        binding.paginationProgressBar.visibility = View.GONE
     }
 
     override fun onDestroyView() {

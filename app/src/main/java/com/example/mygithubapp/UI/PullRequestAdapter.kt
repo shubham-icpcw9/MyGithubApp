@@ -10,13 +10,14 @@ import com.example.mygithubapp.Data.PullRequestResponse
 import com.example.mygithubapp.R
 import kotlinx.android.synthetic.main.row_pull_request.view.*
 
-class PullRequestAdapter : RecyclerView.Adapter<PullRequestAdapter.PullRequestVH>() {
+class PullRequestAdapter(private val nextPageCallback: () -> Unit) : RecyclerView.Adapter<PullRequestAdapter.PullRequestVH>() {
 
-    private var pullRequestsList = listOf<PullRequestResponse>()
+    private var pullRequestsList = arrayListOf<PullRequestResponse>()
 
     fun setData(data : List<PullRequestResponse>?) {
         if(data == null) return
-        pullRequestsList = data
+        pullRequestsList.clear()
+        pullRequestsList.addAll(data)
         notifyDataSetChanged()
     }
 
@@ -43,6 +44,20 @@ class PullRequestAdapter : RecyclerView.Adapter<PullRequestAdapter.PullRequestVH
         return pullRequestsList.size
     }
 
+    fun addPRData(data : List<PullRequestResponse>?){
+        if(data == null) return
+        pullRequestsList.addAll(data)
+        notifyDataSetChanged()
+    }
+
     inner class PullRequestVH(itemView : View) : RecyclerView.ViewHolder(itemView)
+
+    override fun onViewAttachedToWindow(holder: PullRequestVH) {
+        super.onViewAttachedToWindow(holder)
+        val size = pullRequestsList.size
+        if(holder.adapterPosition == size-1) {
+            nextPageCallback()
+        }
+    }
 
 }
