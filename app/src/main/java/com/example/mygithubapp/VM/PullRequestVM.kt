@@ -29,10 +29,10 @@ class PullRequestVM(private val pullRequestRepository: PullRequestRepository) : 
     fun getPRDetails(owner: String, repo: String, pageNo : Int) = viewModelScope.launch {
         pullRequestDetails.postValue(Resource.Loading())
         val response = pullRequestRepository.fetchPRDetails(owner, repo, pageNo)
-        pullRequestDetails.postValue(handleContextualCardsResponse(response))
+        pullRequestDetails.postValue(handleGithubResponse(response))
     }
 
-    private fun handleContextualCardsResponse(response: Response<List<PullRequestResponse>>) :
+    private fun handleGithubResponse(response: Response<List<PullRequestResponse>>) :
             Resource<List<PullRequestResponse>>? {
         if(response.isSuccessful) {
             response.body()?.let { result ->
